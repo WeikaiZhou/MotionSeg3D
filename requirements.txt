@@ -13,7 +13,6 @@ numpy==1.19.4
 opencv-contrib-python==4.5.1.48
 opencv-python==4.5.1.48
 scikit-learn==0.24.2
-sklearn
 strictyaml==1.4.4
 # transforms3d
 # numba

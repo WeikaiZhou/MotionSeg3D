@@ -1,8 +1,8 @@
 name: mos3d
 channels:
-  # - pytorch
+  - pytorch
   - defaults
-  - anaconda
+  - conda-forge
   # You can use the TUNA mirror to speed up the installation if you are in mainland China.
   # - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
   # - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
