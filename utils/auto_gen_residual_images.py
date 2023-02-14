@@ -156,12 +156,12 @@ if __name__ == '__main__':
 
             # Update the value in config to facilitate the iterative loop
             config['num_last_n'] = i
-            config['scan_folder'] = f"data/sequences/{'%02d'%seq}/velodyne"
-            config['pose_file'] = f"data/sequences/{'%02d'%seq}/poses.txt"
-            config['calib_file'] = f"data/sequences/{'%02d'%seq}/calib.txt"
+            config['scan_folder'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/velodyne"
+            config['pose_file'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/poses.txt"
+            config['calib_file'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/calib.txt"
             # config['residual_image_folder'] = f"data/sequences/{'%02d'%seq}/residual_images_{i}"
             # config['visualization_folder'] = f"data/sequences/{'%02d'%seq}/visualization_{i}"
-            config['residual_image_folder'] = f"tmpdata/sequences/{'%02d'%seq}/residual_images_{i}"
-            config['visualization_folder'] = f"tmpdata/sequences/{'%02d'%seq}/visualization_{i}"
+            config['residual_image_folder'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/residual_images_{i}"
+            config['visualization_folder'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/visualization_{i}"
             ic(config)
             process_one_seq(config)

@@ -15,17 +15,17 @@ num_last_n: 8
 
 # Inputs
 # the folder of raw LiDAR scans
-scan_folder: 'data/sequences/08/velodyne'
+scan_folder: '/home/wzhoea/Desktop/kitti_dataset/sequences/00/velodyne'
 # ground truth poses file
-pose_file: 'data/sequences/08/poses.txt'
+pose_file: '/home/wzhoea/Desktop/kitti_dataset/sequences/00/poses.txt'
 # calibration file
-calib_file: 'data/sequences/08/calib.txt'
+calib_file: '/home/wzhoea/Desktop/kitti_dataset/sequences/00/calib.txt'
 
 # Outputs
 # the suffix should be the same as num_last_n!
-residual_image_folder: 'data/sequences/08/residual_images_8'
+residual_image_folder: '/home/wzhoea/Desktop/kitti_dataset/sequences/00/residual_images_0'
 visualize: True
-visualization_folder: 'data/sequences/08/visualization_8'
+visualization_folder: '/home/wzhoea/Desktop/kitti_dataset/sequences/00/visualization_0'
 
 # range image parameters
 range_image:
