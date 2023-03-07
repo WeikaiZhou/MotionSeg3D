@@ -8,67 +8,55 @@ import sys
 import yaml
 import numpy as np
 from tqdm import tqdm
+import argparse
 
 from kitti_utils import load_vertex, load_labels, load_files
 
+
+def get_args():
+	parser = argparse.ArgumentParser("./scan_cleaner.py")
+	parser.add_argument(
+		'--dataset', '-d',
+		type=str,
+		required=True,
+		help='Dataset without cleaning. No Default',
+	)
+	parser.add_argument(
+		'--label', '-l',
+		type=str,
+		required=True,
+		help='Label path. No Default',
+	)
+	parser.add_argument(
+		'--sequence', '-s',
+		type=str,
+		required=True,
+		help='Sequence number. No Default',
+	)
+	return parser
+
 if __name__ == '__main__':
-	# load config file
-	config_filename = 'config/post-processing.yaml'
-	if len(sys.argv) > 1:
-		config_filename = sys.argv[1]
+	parser = get_args()
+	FLAGS, unparsed = parser.parse_known_args()
 
-	if yaml.__version__ >= '5.1':
-		config = yaml.load(open(config_filename), Loader=yaml.FullLoader)
-	else:
-		config = yaml.load(open(config_filename))
-
-	# raw clean folder root
-	scan_root = config['scan_root']
-
-	# specify moving object segmentation results folder
-	mos_pred_root = config['mos_pred_root']
-
-	# create a new folder for combined results
-	clean_scan_root = config['clean_scan_root']
-
-	# specify the split
-	split = config['split']
-	data_yaml = yaml.load(open('config/semantic-kitti-mos.yaml'))
+	print("  Dataset", FLAGS.dataset)
+	print("  Label", FLAGS.label)
+	print("  Sequence", FLAGS.sequence)
 
 	# create output folder
-	seqs = []
-	if not os.path.exists(os.path.join(clean_scan_root, "sequences")):
-		os.makedirs(os.path.join(clean_scan_root, "sequences"))
+	seqs = [FLAGS.sequence]
+	if not os.path.exists(os.path.join(FLAGS.dataset, "sequences", FLAGS.sequence, "clean_scans")):
+		os.makedirs(os.path.join(FLAGS.dataset, "sequences", FLAGS.sequence, "clean_scans"))
 
-	if split == 'train':
-		for seq in data_yaml["split"]["train"]:
-			seq = '{0:02d}'.format(int(seq))
-			print("train", seq)
-			if not os.path.exists(os.path.join(clean_scan_root, "sequences", seq, "clean_scans")):
-				os.makedirs(os.path.join(clean_scan_root, "sequences", seq, "clean_scans"))
-			seqs.append(seq)
-	if split == 'valid':
-		for seq in data_yaml["split"]["valid"]:
-			seq = '{0:02d}'.format(int(seq))
-			print("train", seq)
-			if not os.path.exists(os.path.join(clean_scan_root, "sequences", seq, "clean_scans")):
-				os.makedirs(os.path.join(clean_scan_root,"sequences", seq, "clean_scans"))
-			seqs.append(seq)
-	if split == 'test':
-		for seq in data_yaml["split"]["test"]:
-			seq = '{0:02d}'.format(int(seq))
-			print("train", seq)
-			if not os.path.exists(os.path.join(clean_scan_root, "sequences", seq, "clean_scans")):
-				os.makedirs(os.path.join(clean_scan_root, "sequences", seq, "clean_scans"))
-			seqs.append(seq)
+	
 
 	for seq in seqs:
 		# load moving object segmentation files
-		mos_pred_seq_path = os.path.join(mos_pred_root, "sequences", seq, "predictions")
+		mos_pred_seq_path = os.path.join(FLAGS.label, "sequences", seq, "predictions")
 		mos_pred_files = load_files(mos_pred_seq_path)
 
 		# load semantic segmentation files
-		raw_scan_path = os.path.join(scan_root, "sequences", seq, "velodyne")
+		raw_scan_path = os.path.join(FLAGS.dataset, "sequences", seq, "velodyne")
 		raw_scan_files = load_files(raw_scan_path)
 
 		print('processing seq:', seq)
@@ -80,4 +68,4 @@ if __name__ == '__main__':
 
 			clean_scan = current_scan[mos_pred < 250]
 			np.array(clean_scan, dtype=np.float32).tofile(os.path.join(
-				clean_scan_root, "sequences", seq, "clean_scans", str(frame_idx).zfill(6) + '.bin'))
+				FLAGS.dataset, "sequences", seq, "clean_scans", str(frame_idx).zfill(6) + '.bin'))

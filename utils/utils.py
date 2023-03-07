@@ -6,6 +6,7 @@ import math
 import yaml
 import shutil
 import argparse
+import numpy as np
 
 from decimal import Decimal
 from datetime import datetime

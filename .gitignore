@@ -4,6 +4,8 @@
 log/*
 data/
 .vscode/
+toydata/
+pred/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
