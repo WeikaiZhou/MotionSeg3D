@@ -1,3 +1,11 @@
+# My changes
+To delete the dynamic points according to the prediction: `python utils/scan_cleaner.py --dataset myOriginalDatasetPath --label myLabelPath --sequence theChosenSequenceNumber`
+
+To visualize: `python utils/visualize_mos.py -d myDatasetPath -s theChosenSequenceNumber -p predictionPath`. If you want to see without segmentation, please add `-i`. If you want to see clean scans, please add `--clean`
+
+To convert `.pcd` file to `.bin` file: `python utils/pcd2bin.py --pcd_path=myPcdPath --bin_path=myBinPath` (It uses python=2.7 and installs numpy, argparse, pypcd and tqdm)
+
+
 # Efficient Spatial-Temporal Information Fusion for LiDAR-Based 3D Moving Object Segmentation
 
 ### [Paper](https://arxiv.org/abs/2207.02201) | [Project page](https://npucvr.github.io/MotionSeg3D) | [Overview Video](https://youtu.be/kao26zX1Hdo) | [Supp. Video](https://youtu.be/carIdfwLX_s) <br>

@@ -10,7 +10,7 @@ from auxiliary.laserscanvis import LaserScanVis, LaserScanVisClean
 
 
 def get_args():
-    parser = argparse.ArgumentParser("./visualize.py")
+    parser = argparse.ArgumentParser("./visualize_mos.py")
     parser.add_argument(
         '--dataset', '-d',
         type=str,
@@ -75,9 +75,9 @@ def get_args():
     )
     parser.add_argument(
         '--clean',
-        type=bool,
+        dest='clean',
         default=False,
-        required=False,
+        action='store_true',
         help='Whether to it is going to visualize cleaned dataset. Defaults to %(default)s',
     )
     return parser
@@ -113,139 +113,84 @@ if __name__ == '__main__':
     # fix sequence name
     FLAGS.sequence = '{0:02d}'.format(int(FLAGS.sequence))
 
+    
+        # does sequence folder exist?
     if not FLAGS.clean:
-        # does sequence folder exist?
         scan_paths = os.path.join(FLAGS.dataset, "sequences", FLAGS.sequence, "velodyne")
-        if os.path.isdir(scan_paths):
-            print("Sequence folder exists! Using sequence from %s" % scan_paths)
-        else:
-            print("Sequence folder doesn't exist! Exiting...")
-            quit()
-
-        # populate the pointclouds
-        scan_names = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(scan_paths)) for f in fn]
-        scan_names.sort()
-
-        # does sequence folder exist?
-        if not FLAGS.ignore_semantics:
-            if FLAGS.predictions is not None:
-                label_paths = os.path.join(FLAGS.predictions, "sequences", FLAGS.sequence, "predictions")
-            else:
-                label_paths = os.path.join(FLAGS.dataset, "sequences", FLAGS.sequence, "labels")
-            if os.path.isdir(label_paths):
-                print("Labels folder exists! Using labels from %s" % label_paths)
-            else:
-                print(label_paths)
-                print("Labels folder doesn't exist! Exiting...")
-                quit()
-            # populate the pointclouds
-            label_names = [os.path.join(dp, f) for dp, dn, fn in os.walk(
-                os.path.expanduser(label_paths)) for f in fn]
-            label_names.sort()
-
-            # check that there are same amount of labels and scans
-            if not FLAGS.ignore_safety:
-                print(f"len(label_names):{len(label_names)}, len(scan_names)={len(scan_names)}")
-                assert(len(label_names) == len(scan_names))
-
-        # create a scan
-        if FLAGS.ignore_semantics:
-            scan = LaserScan(project=True)  # project all opened scans to spheric proj
-        else:
-            color_dict = CFG["color_map"]
-            # learning_map = CFG["learning_map"]
-            # learning_map_inv = CFG["learning_map_inv"]
-            # # import pdb; pdb.set_trace()
-            # for key in learning_map.keys():
-            #     color_dict[key] = color_dict[learning_map[key]]
-            # for key in color_dict.keys():
-            #     if key < 250:
-            #         color_dict[key] = [255, 255, 255]
-            #     else:
-            #         color_dict[key] = [0, 0, 255]
-            nclasses = len(color_dict)
-            scan = SemLaserScan(nclasses, color_dict, project=True)
-
-        # create a visualizer
-        semantics = not FLAGS.ignore_semantics
-        instances = FLAGS.do_instances
-        if not semantics:
-            label_names = None
-        vis = LaserScanVis(scan=scan,
-                        scan_names=scan_names,
-                        label_names=label_names,
-                        offset=FLAGS.offset,
-                        semantics=semantics, instances=instances and semantics)
-
-        # print instructions
-        print("To navigate:")
-        print("\tb: back (previous scan)")
-        print("\tn: next (next scan)")
-        print("\tq: quit (exit program)")
-
-        # run the visualizer
-        vis.run()
     else:
-        # does sequence folder exist?
-        scan_paths = os.path.join(
-            FLAGS.dataset, "sequences", FLAGS.sequence, "clean_scans")
-        if os.path.isdir(scan_paths):
-            print("Sequence folder exists! Using sequence from %s" % scan_paths)
+        scan_paths = os.path.join(FLAGS.dataset, "sequences", FLAGS.sequence, "clean_scans")
+    if os.path.isdir(scan_paths):
+        print("Sequence folder exists! Using sequence from %s" % scan_paths)
+    else:
+        print("Sequence folder doesn't exist! Exiting...")
+        quit()
+
+    # populate the pointclouds
+    scan_names = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(scan_paths)) for f in fn]
+    scan_names.sort()
+
+    # does sequence folder exist?
+    if not FLAGS.ignore_semantics:
+        if FLAGS.predictions is not None:
+            label_paths = os.path.join(FLAGS.predictions, "sequences", FLAGS.sequence, "predictions")
         else:
-            print("Sequence folder doesn't exist! Exiting...")
+            label_paths = os.path.join(FLAGS.dataset, "sequences", FLAGS.sequence, "labels")
+        if os.path.isdir(label_paths):
+            print("Labels folder exists! Using labels from %s" % label_paths)
+        else:
+            print(label_paths)
+            print("Labels folder doesn't exist! Exiting...")
             quit()
-
         # populate the pointclouds
-        scan_names = [os.path.join(dp, f) for dp, dn, fn in os.walk(
-            os.path.expanduser(scan_paths)) for f in fn]
-        scan_names.sort()
+        label_names = [os.path.join(dp, f) for dp, dn, fn in os.walk(
+            os.path.expanduser(label_paths)) for f in fn]
+        label_names.sort()
 
-        # does sequence folder exist?
-        if not FLAGS.ignore_semantics:
-            if FLAGS.predictions is not None:
-                label_paths = os.path.join(
-                    FLAGS.predictions, "sequences", FLAGS.sequence, "predictions")
-            else:
-                label_paths = os.path.join(
-                    FLAGS.dataset, "sequences", FLAGS.sequence, "labels")
-            if os.path.isdir(label_paths):
-                print("Labels folder exists! Using labels from %s" % label_paths)
-            else:
-                print(label_paths)
-                print("Labels folder doesn't exist! Exiting...")
-                quit()
-            # populate the pointclouds
-            label_names = [os.path.join(dp, f) for dp, dn, fn in os.walk(
-                os.path.expanduser(label_paths)) for f in fn]
-            label_names.sort()
+            
 
-            # check that there are same amount of labels and scans
-            if not FLAGS.ignore_safety:
-                print(
-                    f"len(label_names):{len(label_names)}, len(scan_names)={len(scan_names)}")
-                assert (len(label_names) == len(scan_names))
+    # create a scan
+    if FLAGS.ignore_semantics:
+        scan = LaserScan(project=True)  # project all opened scans to spheric proj
+    else:
+        color_dict = CFG["color_map"]
+        # learning_map = CFG["learning_map"]
+        # learning_map_inv = CFG["learning_map_inv"]
+        # # import pdb; pdb.set_trace()
+        # for key in learning_map.keys():
+        #     color_dict[key] = color_dict[learning_map[key]]
+        # for key in color_dict.keys():
+        #     if key < 250:
+        #         color_dict[key] = [255, 255, 255]
+        #     else:
+        #         color_dict[key] = [0, 0, 255]
+        nclasses = len(color_dict)
+        scan = SemLaserScan(nclasses, color_dict, project=True)
 
-        # create a scan
-        if FLAGS.ignore_semantics:
-            # project all opened scans to spheric proj
-            scan = LaserScan(project=True)
-        else:
-            scan = LaserScan(project=True)
-
-        # create a visualizer
-        semantics = not FLAGS.ignore_semantics
-        instances = FLAGS.do_instances
+    # create a visualizer
+        
+    instances = FLAGS.do_instances
+    if FLAGS.ignore_semantics:
+        label_names = None
+        semantics = FLAGS.ignore_semantics
         vis = LaserScanVisClean(scan=scan,
-                           scan_names=scan_names,
-                           label_names=label_names,
-                           offset=FLAGS.offset,
-                           semantics=semantics, instances=instances and semantics)
+                    scan_names=scan_names,
+                    label_names=label_names,
+                    offset=FLAGS.offset,
+                    semantics=semantics, instances=instances and semantics)
+    else:
+        semantics = not FLAGS.ignore_semantics
+        vis = LaserScanVis(scan=scan,
+                    scan_names=scan_names,
+                    label_names=label_names,
+                    offset=FLAGS.offset,
+                    semantics=semantics, instances=instances and semantics)
 
-        # print instructions
-        print("To navigate:")
-        print("\tb: back (previous scan)")
-        print("\tn: next (next scan)")
-        print("\tq: quit (exit program)")
+    # print instructions
+    print("To navigate:")
+    print("\tb: back (previous scan)")
+    print("\tn: next (next scan)")
+    print("\tq: quit (exit program)")
 
-        # run the visualizer
-        vis.run()
+    # run the visualizer
+    vis.run()
+    
