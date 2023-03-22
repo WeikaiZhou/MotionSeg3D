@@ -47,7 +47,7 @@ class User():
                                           max_points=self.ARCH["dataset"]["max_points"],
                                           batch_size=self.infer_batch_size,
                                           workers=2, # self.ARCH["train"]["workers"],
-                                          gt=True,
+                                          gt=False, ######################################################################### modification
                                           shuffle_train=False)
 
         with torch.no_grad():

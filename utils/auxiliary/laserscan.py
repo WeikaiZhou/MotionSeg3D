@@ -69,6 +69,7 @@ class LaserScan:
         scan = np.fromfile(filename, dtype=np.float32)
         scan = scan.reshape((-1, 4))
         # print(filename, scan.shape)
+        # index = np.linalg.norm(scan[:, 0:3], 2, axis=1) > 0.
 
         # put in attribute
         points = scan[:, 0:3]    # get xyz
@@ -113,6 +114,7 @@ class LaserScan:
 
         # get depth of all points
         depth = np.linalg.norm(self.points, 2, axis=1)
+        # print(len(self.points))
 
         # get scan components
         scan_x = self.points[:, 0]

@@ -11,13 +11,13 @@ def main():
     ## Add parser
     parser = argparse.ArgumentParser(description="Convert .pcd to .bin")
     parser.add_argument(
-        "--pcd_path",
+        "--pcd_path", '-p',
         help=".pcd file path.",
         type=str,
         default="/home/user/lidar_pcd"
     )
     parser.add_argument(
-        "--bin_path",
+        "--bin_path", '-b',
         help=".bin file path.",
         type=str,
         default="/home/user/lidar_bin"
@@ -81,6 +81,10 @@ def main():
 
         ## Stack all data    
         points_32 = np.transpose(np.vstack((np_x, np_y, np_z, np_i)))
+
+        # delete invalid points, e.g. depth == 0
+        index = np.linalg.norm(points_32[:, 0:3], 2, axis=1) > 0.
+        points_32 = points_32[index, :]
 
         ## Save bin file                                    
         points_32.tofile(bin_file_path)
