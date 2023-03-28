@@ -376,7 +376,7 @@ class LaserScanVisClean:
         # plot semantics
         if self.semantics:
             self.sem_vis.set_data(self.scan.points,
-                                  size=1)
+                                  size=3)
 
         # plot instances
         if self.instances:
