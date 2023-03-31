@@ -93,7 +93,7 @@ class SalsaNextWithMotionAttention(nn.Module):
         flow_feat_map = nn.Sigmoid()(flow_feat_map)
         spatial_attentioned_img_feat = flow_feat_map * img_feat
 
-        # channel-wise attention
+        # channel-wise attention 
         feat_vec = self.avg_pool(spatial_attentioned_img_feat)
         feat_vec = conv1x1_channel_wise(feat_vec)
         feat_vec = nn.Softmax(dim=1)(feat_vec) * feat_vec.shape[1]
