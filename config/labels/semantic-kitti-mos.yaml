@@ -177,20 +177,20 @@ split: # sequence numbers
     - 7  # 1105
     - 9  # 1591
     - 10 # 1201
-    - 30 # 297  add new kitti-road seq
-    - 31 # 188  add new kitti-road seq
-    - 32 # 430  add new kitti-road seq
-    - 33 # 430  add new kitti-road seq
-    - 34 # 390  add new kitti-road seq
-    - 40 # 1170 add new kitti-road seq
+    #- 30 # 297  add new kitti-road seq
+    #- 31 # 188  add new kitti-road seq
+    #- 32 # 430  add new kitti-road seq
+    #- 33 # 430  add new kitti-road seq
+    #- 34 # 390  add new kitti-road seq
+    #- 40 # 1170 add new kitti-road seq
   valid:
     - 8  # 4071
-    - 35 # 78   add new kitti-road seq
-    - 36 # 420  add new kitti-road seq
-    - 37 # 936  add new kitti-road seq
-    - 38 # 339  add new kitti-road seq
-    - 39 # 279  add new kitti-road seq
-    - 41 # 837  add new kitti-road seq
+    #- 35 # 78   add new kitti-road seq
+    #- 36 # 420  add new kitti-road seq
+    #- 37 # 936  add new kitti-road seq
+    #- 38 # 339  add new kitti-road seq
+    #- 39 # 279  add new kitti-road seq
+    #- 41 # 837  add new kitti-road seq
   test:
     - 11
     - 12

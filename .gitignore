@@ -6,6 +6,8 @@ data/
 .vscode/
 toydata/
 pred/
+log/
+core
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

@@ -5,7 +5,7 @@
 # Brief: This script generates residual images
 
 import os
-os.environ["OMP_NUM_THREADS"] = "4"
+os.environ["OMP_NUM_THREADS"] = "8"
 import yaml
 import numpy as np
 import matplotlib.pyplot as plt
@@ -150,18 +150,18 @@ if __name__ == '__main__':
     config = load_yaml(config_filename)
 
     # used for kitti-raw and kitti-road
-    for seq in range(0, 10): # sequences id
+    for seq in range(2, 11): # sequences id
 
-        for i in range(1,9): # residual_image_i
+        for i in range(1,6): # residual_image_i
 
             # Update the value in config to facilitate the iterative loop
             config['num_last_n'] = i
-            config['scan_folder'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/velodyne"
-            config['pose_file'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/poses.txt"
-            config['calib_file'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/calib.txt"
+            config['scan_folder'] = f"/media/wzhoea/T7/kitti_dataset/sequences/{'%02d'%seq}/velodyne"
+            config['pose_file'] = f"/media/wzhoea/T7/kitti_dataset/sequences/{'%02d'%seq}/poses.txt"
+            config['calib_file'] = f"/media/wzhoea/T7/kitti_dataset/sequences/{'%02d'%seq}/calib.txt"
             # config['residual_image_folder'] = f"data/sequences/{'%02d'%seq}/residual_images_{i}"
             # config['visualization_folder'] = f"data/sequences/{'%02d'%seq}/visualization_{i}"
-            config['residual_image_folder'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/residual_images_{i}"
-            config['visualization_folder'] = f"/home/wzhoea/Desktop/kitti_dataset/sequences/{'%02d'%seq}/visualization_{i}"
+            config['residual_image_folder'] = f"/media/wzhoea/T7/kitti_dataset/sequences/{'%02d'%seq}/residual_images_{i}"
+            config['visualization_folder'] = f"/media/wzhoea/T7/residual_visualization/sequences/{'%02d'%seq}/visualization_{i}"
             ic(config)
             process_one_seq(config)

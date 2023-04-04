@@ -3,13 +3,13 @@
 ################################################################################
 train:
   loss: "xentropy"       # must be either xentropy or iou
-  max_epochs: 150
+  max_epochs: 10        # 150
   lr: 0.01               # sgd learning rate
   wup_epochs: 1          # warmup during first XX epochs (can be float)
   momentum: 0.9          # sgd momentum
   lr_decay: 0.99         # learning rate decay per epoch after initial cycle (from min lr)
   w_decay: 0.0001        # weight decay
-  batch_size: 20         # batch size
+  batch_size: 1         # batch size 20
   report_batch: 10       # every x batches, report loss
   report_epoch: 1        # every x epochs, report validation set
   epsilon_w: 0.001       # class weight w = 1 / (content + epsilon_w)
@@ -21,7 +21,7 @@ train:
   
   # for mos
   residual: True # This needs to be the same as in the dataset params below!
-  n_input_scans: 8 # This needs to be the same as in the dataset params below!
+  n_input_scans: 5 # This needs to be the same as in the dataset params below!
 
 ################################################################################
 # postproc parameters
@@ -69,7 +69,7 @@ dataset:
       - 0.16
       
     # for mos
-    n_input_scans: 8  # This needs to be the same as in the backbone params above!
+    n_input_scans: 5  # This needs to be the same as in the backbone params above!
     residual: True    # This needs to be the same as in the backbone params above!
     transform: False  # tranform the last n_input_scans - 1 frames before concatenation
     use_normal: False # if use normal vector as channels of range image

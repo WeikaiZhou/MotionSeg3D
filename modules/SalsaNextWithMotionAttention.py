@@ -50,12 +50,20 @@ class SalsaNextWithMotionAttention(nn.Module):
         self.RI_resBlock2 = ResBlock(2 * 32, 2 * 2 * 32, 0.2, pooling=True)
         self.RI_resBlock3 = ResBlock(2 * 2 * 32, 2 * 4 * 32, 0.2, pooling=True)
         self.RI_resBlock4 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=True)
-        self.RI_resBlock5 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=False)
+        # self.RI_resBlock5 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=False)
 
-        self.RI_upBlock1 = UpBlock(2 * 4 * 32, 4 * 32, 0.2)
-        self.RI_upBlock2 = UpBlock(4 * 32, 4 * 32, 0.2)
-        self.RI_upBlock3 = UpBlock(4 * 32, 2 * 32, 0.2)
-        self.RI_upBlock4 = UpBlock(2 * 32, 32, 0.2, drop_out=False)
+        # self.RI_upBlock1 = UpBlock(2 * 4 * 32, 4 * 32, 0.2)
+        # self.RI_upBlock2 = UpBlock(4 * 32, 4 * 32, 0.2)
+        # self.RI_upBlock3 = UpBlock(4 * 32, 2 * 32, 0.2)
+        # self.RI_upBlock4 = UpBlock(2 * 32, 32, 0.2, drop_out=False)
+
+        # for fusion branch
+        self.FU_resBlock1 = ResBlock(32, 2 * 32, 0.2, pooling=True, drop_out=False)
+        self.FU_resBlock2 = ResBlock(2 * 32, 2 * 2 * 32, 0.2, pooling=True)
+        self.FU_resBlock3 = ResBlock(2 * 2 * 32, 2 * 4 * 32, 0.2, pooling=True)
+        self.FU_resBlock4 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=True)
+        self.FU_resBlock5 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=False)
+
         
         self.logits3 = nn.Conv2d(32, nclasses, kernel_size=(1, 1))
 
@@ -121,15 +129,6 @@ class SalsaNextWithMotionAttention(nn.Module):
         current_range_image = x[:, :self.range_channel, : ,:]
         residual_images = x[:, self.range_channel:, : ,:]
 
-        ###### the Encoder for residual image ######
-        RI_downCntx = self.RI_downCntx(residual_images)
-
-        RI_down0c, RI_down0b = self.RI_resBlock1(RI_downCntx)
-        RI_down1c, RI_down1b = self.RI_resBlock2(RI_down0c)
-        RI_down2c, RI_down2b = self.RI_resBlock3(RI_down1c)
-        RI_down3c, RI_down3b = self.RI_resBlock4(RI_down2c)
-        # RI_down5c = self.RI_resBlock5(RI_down3c)
-
         ###### the Encoder for range image ######
         downCntx = self.downCntx(current_range_image)
         # Use MetaKernel to capture more spatial information
@@ -140,43 +139,42 @@ class SalsaNextWithMotionAttention(nn.Module):
                                  kernel_size=3)
         downCntx = self.downCntx2(downCntx)
         downCntx = self.downCntx3(downCntx)
-
-        ###### Bridging two specific branches using MotionGuidedAttention ######
-        if self.use_attention == "MGA":
-            downCntx = self.encoder_attention_module_MGA_tmc(downCntx, RI_downCntx, self.conv1x1_conv1_channel_wise, self.conv1x1_conv1_spatial)
-        elif self.use_attention == "Add":
-            downCntx += RI_downCntx
         down0c, down0b = self.resBlock1(downCntx)
-
-        if self.use_attention == "MGA":
-            down0c = self.encoder_attention_module_MGA_tmc(down0c, RI_down0c, self.conv1x1_layer0_channel_wise, self.conv1x1_layer0_spatial)
-        elif self.use_attention == "Add":
-            down0c += RI_down0c
         down1c, down1b = self.resBlock2(down0c)
-
-        if self.use_attention == "MGA":
-            down1c = self.encoder_attention_module_MGA_tmc(down1c, RI_down1c, self.conv1x1_layer1_channel_wise, self.conv1x1_layer1_spatial)
-        elif self.use_attention == "Add":
-            down1c += RI_down1c
         down2c, down2b = self.resBlock3(down1c)
-
-        if self.use_attention == "MGA":
-            down2c = self.encoder_attention_module_MGA_tmc(down2c, RI_down2c, self.conv1x1_layer2_channel_wise, self.conv1x1_layer2_spatial)
-        elif self.use_attention == "Add":
-            down2c += RI_down2c
         down3c, down3b = self.resBlock4(down2c)
 
-        if self.use_attention == "MGA":
-            down3c = self.encoder_attention_module_MGA_tmc(down3c, RI_down3c, self.conv1x1_layer3_channel_wise, self.conv1x1_layer3_spatial)
-        elif self.use_attention == "Add":
-            down3c += RI_down3c
-        down5c = self.resBlock5(down3c) 
+        ###### the Encoder for residual image ######
+        RI_downCntx = self.RI_downCntx(residual_images)
+
+        RI_down0c, RI_down0b = self.RI_resBlock1(RI_downCntx)
+        RI_down1c, RI_down1b = self.RI_resBlock2(RI_down0c)
+        RI_down2c, RI_down2b = self.RI_resBlock3(RI_down1c)
+        RI_down3c, RI_down3b = self.RI_resBlock4(RI_down2c)
+        # RI_down5c = self.RI_resBlock5(RI_down3c)
+
+        ###### Bridging two specific branches using MotionGuidedAttention ######
+        FU_downCntx = self.encoder_attention_module_MGA_tmc(downCntx, RI_downCntx, self.conv1x1_conv1_channel_wise, self.conv1x1_conv1_spatial)
+        FU_down0c, FU_down0b = self.FU_resBlock1(FU_downCntx)
+
+        FU_down0c = self.encoder_attention_module_MGA_tmc(down0c, RI_down0c, self.conv1x1_layer0_channel_wise, self.conv1x1_layer0_spatial)
+        FU_down1c, FU_down1b = self.FU_resBlock2(FU_down0c)
+
+        FU_down1c = self.encoder_attention_module_MGA_tmc(down1c, RI_down1c, self.conv1x1_layer1_channel_wise, self.conv1x1_layer1_spatial)
+        FU_down2c, FU_down2b = self.resBlock3(FU_down1c)
+
+        FU_down2c = self.encoder_attention_module_MGA_tmc(down2c, RI_down2c, self.conv1x1_layer2_channel_wise, self.conv1x1_layer2_spatial)
+        FU_down3c, FU_down3b = self.resBlock4(FU_down2c)
+
+        FU_down3c = self.encoder_attention_module_MGA_tmc(down3c, RI_down3c, self.conv1x1_layer3_channel_wise, self.conv1x1_layer3_spatial)
+        # down5c = self.resBlock5(down3c) 
+        FU_down5c = self.resBlock5(FU_down3c) 
 
         ###### the Decoder, same as SalsaNext ######
-        up4e = self.upBlock1(down5c, down3b)
-        up3e = self.upBlock2(up4e, down2b)
-        up2e = self.upBlock3(up3e, down1b)
-        up1e = self.upBlock4(up2e, down0b)
+        up4e = self.upBlock1(FU_down5c, FU_down3b)
+        up3e = self.upBlock2(up4e, FU_down2b)
+        up2e = self.upBlock3(up3e, FU_down1b)
+        up1e = self.upBlock4(up2e, FU_down0b)
         logits = self.logits3(up1e)
 
         logits = F.softmax(logits, dim=1)

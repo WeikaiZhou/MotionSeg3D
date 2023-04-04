@@ -21,7 +21,7 @@ train:
   
   # for mos
   residual: True # This needs to be the same as in the dataset params below!
-  n_input_scans: 8 # This needs to be the same as in the dataset params below!
+  n_input_scans: 5 # This needs to be the same as in the dataset params below!
 
 ################################################################################
 # postproc parameters
@@ -69,7 +69,7 @@ dataset:
       - 0.16
       
     # for mos
-    n_input_scans: 8  # This needs to be the same as in the backbone params above!
+    n_input_scans: 5  # This needs to be the same as in the backbone params above!
     residual: True    # This needs to be the same as in the backbone params above!
     transform: False  # tranform the last n_input_scans - 1 frames before concatenation
     use_normal: False # if use normal vector as channels of range image
