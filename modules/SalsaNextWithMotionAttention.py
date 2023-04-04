@@ -59,10 +59,10 @@ class SalsaNextWithMotionAttention(nn.Module):
 
         # for fusion branch
         self.FU_resBlock1 = ResBlock(32, 2 * 32, 0.2, pooling=True, drop_out=False)
-        self.FU_resBlock2 = ResBlock(2 * 32, 2 * 2 * 32, 0.2, pooling=True)
-        self.FU_resBlock3 = ResBlock(2 * 2 * 32, 2 * 4 * 32, 0.2, pooling=True)
-        self.FU_resBlock4 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=True)
-        self.FU_resBlock5 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=False)
+        self.FU_resBlock2 = ResBlock(2 * 2 * 32, 2 * 2 * 32, 0.2, pooling=True)
+        self.FU_resBlock3 = ResBlock(2 * 2 * 2 * 32, 2 * 4 * 32, 0.2, pooling=True)
+        self.FU_resBlock4 = ResBlock(2 * 2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=True)
+        self.FU_resBlock5 = ResBlock(2 * 2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=False)
 
         
         self.logits3 = nn.Conv2d(32, nclasses, kernel_size=(1, 1))
@@ -157,18 +157,21 @@ class SalsaNextWithMotionAttention(nn.Module):
         FU_downCntx = self.encoder_attention_module_MGA_tmc(downCntx, RI_downCntx, self.conv1x1_conv1_channel_wise, self.conv1x1_conv1_spatial)
         FU_down0c, FU_down0b = self.FU_resBlock1(FU_downCntx)
 
-        FU_down0c = self.encoder_attention_module_MGA_tmc(down0c, RI_down0c, self.conv1x1_layer0_channel_wise, self.conv1x1_layer0_spatial)
+        #test = self.encoder_attention_module_MGA_tmc(down0c, RI_down0c, self.conv1x1_layer0_channel_wise, self.conv1x1_layer0_spatial)
+        #print(self.encoder_attention_module_MGA_tmc(down0c, RI_down0c, self.conv1x1_layer0_channel_wise, self.conv1x1_layer0_spatial).shape)
+        FU_down0c = torch.cat((FU_down0c, self.encoder_attention_module_MGA_tmc(down0c, RI_down0c, self.conv1x1_layer0_channel_wise, self.conv1x1_layer0_spatial)), 1)
+        #print(FU_down0c.shape)
         FU_down1c, FU_down1b = self.FU_resBlock2(FU_down0c)
 
-        FU_down1c = self.encoder_attention_module_MGA_tmc(down1c, RI_down1c, self.conv1x1_layer1_channel_wise, self.conv1x1_layer1_spatial)
-        FU_down2c, FU_down2b = self.resBlock3(FU_down1c)
+        FU_down1c = torch.cat((FU_down1c, self.encoder_attention_module_MGA_tmc(down1c, RI_down1c, self.conv1x1_layer1_channel_wise, self.conv1x1_layer1_spatial)), 1)
+        FU_down2c, FU_down2b = self.FU_resBlock3(FU_down1c)
 
-        FU_down2c = self.encoder_attention_module_MGA_tmc(down2c, RI_down2c, self.conv1x1_layer2_channel_wise, self.conv1x1_layer2_spatial)
-        FU_down3c, FU_down3b = self.resBlock4(FU_down2c)
+        FU_down2c = torch.cat((FU_down2c, self.encoder_attention_module_MGA_tmc(down2c, RI_down2c, self.conv1x1_layer2_channel_wise, self.conv1x1_layer2_spatial)), 1)
+        FU_down3c, FU_down3b = self.FU_resBlock4(FU_down2c)
 
-        FU_down3c = self.encoder_attention_module_MGA_tmc(down3c, RI_down3c, self.conv1x1_layer3_channel_wise, self.conv1x1_layer3_spatial)
+        FU_down3c = torch.cat((FU_down3c, self.encoder_attention_module_MGA_tmc(down3c, RI_down3c, self.conv1x1_layer3_channel_wise, self.conv1x1_layer3_spatial)), 1)
         # down5c = self.resBlock5(down3c) 
-        FU_down5c = self.resBlock5(FU_down3c) 
+        FU_down5c = self.FU_resBlock5(FU_down3c) 
 
         ###### the Decoder, same as SalsaNext ######
         up4e = self.upBlock1(FU_down5c, FU_down3b)
