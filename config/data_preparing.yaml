@@ -11,7 +11,7 @@ debug: False
 # normalize/scale the difference with corresponding range value
 normalize: True
 # use the last n frame to calculate the difference image
-num_last_n: 8
+num_last_n: 5
 
 # Inputs
 # the folder of raw LiDAR scans
