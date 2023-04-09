@@ -34,7 +34,7 @@ class SalsaNextWithMotionAttention(nn.Module):
         self.resBlock2 = ResBlock(2 * 32, 2 * 2 * 32, 0.2, pooling=True)
         self.resBlock3 = ResBlock(2 * 2 * 32, 2 * 4 * 32, 0.2, pooling=True)
         self.resBlock4 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=True)
-        #self.resBlock5 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=False)
+        self.resBlock5 = ResBlock(2 * 4 * 32, 2 * 4 * 32, 0.2, pooling=False)
 
         self.upBlock1 = UpBlock(2 * 4 * 32, 4 * 32, 0.2)
         self.upBlock2 = UpBlock(4 * 32, 4 * 32, 0.2)
