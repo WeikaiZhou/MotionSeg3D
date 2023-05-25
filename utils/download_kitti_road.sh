@@ -20,7 +20,7 @@ road_raw_id_list=(2011_09_26_drive_0015 2011_09_26_drive_0027 2011_09_26_drive_0
 sub_id=(30 31 32 33 34 35 36 37 38 39 40 41)
 
 # Please modify it to the local path
-DATA_ROOT=DEBUG_kitti_road
+DATA_ROOT=/media/wzhoea/T7/kitti_road/
 
 mkdir $DATA_ROOT
 cd $DATA_ROOT

@@ -41,7 +41,7 @@ def process_one_seq(config):
     debug = config['debug']
     normalize = config['normalize']
     num_last_n = config['num_last_n']
-    visualize = config['visualize']
+    visualize = False
     visualization_folder = config['visualization_folder']
 
     # specify the output folders
@@ -150,18 +150,18 @@ if __name__ == '__main__':
     config = load_yaml(config_filename)
 
     # used for kitti-raw and kitti-road
-    for seq in range(2, 11): # sequences id
+    for seq in range(22, 23): # sequences id
 
         for i in range(1,6): # residual_image_i
 
             # Update the value in config to facilitate the iterative loop
             config['num_last_n'] = i
-            config['scan_folder'] = f"/media/wzhoea/T7/kitti_dataset/sequences/{'%02d'%seq}/velodyne"
-            config['pose_file'] = f"/media/wzhoea/T7/kitti_dataset/sequences/{'%02d'%seq}/poses.txt"
-            config['calib_file'] = f"/media/wzhoea/T7/kitti_dataset/sequences/{'%02d'%seq}/calib.txt"
+            config['scan_folder'] = f"/media/wzhoea/T7/scania_dataset/sequences/{'%02d'%seq}/velodyne"
+            config['pose_file'] = f"/media/wzhoea/T7/scania_dataset/sequences/{'%02d'%seq}/poses.txt"
+            config['calib_file'] = f"/media/wzhoea/T7/scania_dataset/sequences/{'%02d'%seq}/calib.txt"
             # config['residual_image_folder'] = f"data/sequences/{'%02d'%seq}/residual_images_{i}"
             # config['visualization_folder'] = f"data/sequences/{'%02d'%seq}/visualization_{i}"
-            config['residual_image_folder'] = f"/media/wzhoea/T7/kitti_dataset/sequences/{'%02d'%seq}/residual_images_{i}"
+            config['residual_image_folder'] = f"/media/wzhoea/T7/scania_dataset/sequences/{'%02d'%seq}/residual_images_{i}"
             config['visualization_folder'] = f"/media/wzhoea/T7/residual_visualization/sequences/{'%02d'%seq}/visualization_{i}"
             ic(config)
             process_one_seq(config)
