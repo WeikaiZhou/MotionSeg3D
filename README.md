@@ -1,8 +1,8 @@
-# Updates
+# Updates (Scan-to-scan part)
 
 To install the environment, please refer to the original readme file, or use the docker file provided, which installs a conda envrionment called `mos3d`.
 
-To convert `.pcd` file to `.bin` file: `python utils/pcd2bin.py --pcd_path=myPcdPath --bin_path=myBinPath` (It uses python=2.7 and installs numpy, argparse, pypcd and tqdm, so you should install a new conda envrionment rather than using `mos3d`).
+To convert `.pcd` file to `.bin` file: `python utils/pcd2bin.py --pcd_path=myPcdPath --bin_path=myBinPath`  
 
 To convert Scania pose info to kitti format: `python utils/convert_scania_pose_delete_time.py -p pathToScaniaPose`.
 
