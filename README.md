@@ -1,10 +1,20 @@
-# My changes
-To delete the dynamic points according to the prediction: `python utils/scan_cleaner.py --dataset myOriginalDatasetPath --label myLabelPath --sequence theChosenSequenceNumber`
+# Updates
+
+To install the environment, please refer to the original readme file, or use the docker file provided, which installs a conda envrionment called `mos3d`.
+
+To convert `.pcd` file to `.bin` file: `python utils/pcd2bin.py --pcd_path=myPcdPath --bin_path=myBinPath` (It uses python=2.7 and installs numpy, argparse, pypcd and tqdm, so you should install a new conda envrionment rather than using `mos3d`).
+
+To convert Scania pose info to kitti format: `python utils/convert_scania_pose_delete_time.py -p pathToScaniaPose`.
+
+To download the pretrained model of the improved model, please visit [here](https://drive.google.com/file/d/1l30IAlen9jwEprQY2wjZ96h9qdNgW-kY/view?usp=sharing). The orginal model is [here](https://drive.google.com/file/d/199hRJBs-3MVgqrd4Tb08Eo5pjBG74cSX/view). You need to change `/modules/SalsaNextWithMotionAttention.py` accordingly to the code in `/modules/model_mine_9block.py` or `/modules/model_original.py`.
+
+If you want to train you own model, please refer to the original readme file.
+
+To infer: `python infer.py -d pathToDataset -m pathToPretrainedModel -l pathToOutputLables -s valid --pointrefine`. You need to change the `seq_id` corresponding to `valid` in `model_path/data_cfg.yaml`. For Scania dataset, it is recommended to set `theChosenSequenceNumber` as 22. The director should be in the form of semanticKITTI.
+
+To delete the dynamic points according to the prediction: `python utils/scan_cleaner.py --dataset myOriginalDatasetPath --label myLabelPath --sequence theChosenSequenceNumber`. For Scania dataset, it is recommended to set `theChosenSequenceNumber` as 22. This part connects scan-to-scan with scan-to-map.
 
 To visualize: `python utils/visualize_mos.py -d myDatasetPath -s theChosenSequenceNumber -p predictionPath`. If you want to see without segmentation, please add `-i`. If you want to see clean scans, please add `--clean`
-
-To convert `.pcd` file to `.bin` file: `python utils/pcd2bin.py --pcd_path=myPcdPath --bin_path=myBinPath` (It uses python=2.7 and installs numpy, argparse, pypcd and tqdm)
-
 
 # Efficient Spatial-Temporal Information Fusion for LiDAR-Based 3D Moving Object Segmentation
 
